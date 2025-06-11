@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Homepage</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0d0d0d;
+            color: #fff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            animation: fadeIn 1s ease-in-out;
+            z-index: 1000;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff9800;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            transition: color 0.3s;
+        }
+        nav ul li a:hover {
+            color: #ff9800;
+        }
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url('trading-bg.jpg') no-repeat center center/cover;
+            text-align: center;
+            animation: zoomIn 1.5s ease-in-out;
+        }
+        .hero-content {
+            max-width: 600px;
+            animation: slideUp 1.5s ease-in-out;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .hero button {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            border: none;
+            cursor: pointer;
+            background: #ff9800;
+            color: black;
+            transition: background 0.3s;
+        }
+        .hero button:hover {
+            background: #e68900;
+        }
+        .features, .testimonials, .trading-graph {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(to bottom, #1a1a1a, #0d0d0d);
+            animation: fadeIn 2s ease-in-out;
+        }
+        .feature {
+            max-width: 300px;
+            margin: 20px;
+        }
+        .testimonial {
+            margin: 20px auto;
+            max-width: 400px;
+            font-style: italic;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">TradingX</div>
+        <nav>
+            <ul>
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#features">Markets</a></li>
+                <li><a href="#testimonials">Insights</a></li>
+                <li><a href="#trading-graph">Live Charts</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1>Trade Smarter, Trade Faster</h1>
+            <p>Harness AI-driven trading strategies for market dominance.</p>
+            <button>Get Started</button>
+        </div>
+    </section>
+    
+    <section id="features" class="features">
+        <div class="feature">
+            <h2>Live Market Analysis</h2>
+            <p>Stay ahead with real-time charts and analytics.</p>
+        </div>
+        <div class="feature">
+            <h2>AI-Powered Strategies</h2>
+            <p>Leverage machine learning for precise trading decisions.</p>
+        </div>
+        <div class="feature">
+            <h2>Secure Transactions</h2>
+            <p>Experience top-tier security for all your trades.</p>
+        </div>
+    </section>
+    
+    <section id="testimonials" class="testimonials">
+        <h2>What Traders Say</h2>
+        <div class="testimonial">
+            <p>"TradingX revolutionized my trading game!"</p>
+            <span>- Alex T.</span>
+        </div>
+        <div class="testimonial">
+            <p>"Best AI tools for market analysis hands down."</p>
+            <span>- Sarah K.</span>
+        </div>
+    </section>
+
+    <section id="trading-graph" class="trading-graph">
+        <h2>Live Trading Graph</h2>
+        <canvas id="tradingChart"></canvas>
+    </section>
+    
+    <script>
+        document.querySelectorAll('nav ul li a').forEach(anchor => {
+            anchor.addEventListener('click', function(event) {
+                event.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 50,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        
+    </script>
+</body>
+</html>

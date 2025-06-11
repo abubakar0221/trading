@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4caf50;
+            --danger-color: #f44336;
+            --light-color: #f5f5f5;
+            --dark-color: #333;
+            --sidebar-width: 250px;
+            --header-height: 60px;
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Header styles */
+        .header {
+            background-color: white;
+            height: var(--header-height);
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark-color);
+            background: none;
+            border: none;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            background-color: white;
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height));
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            box-shadow: var(--box-shadow);
+            padding-top: 20px;
+            transition: var(--transition);
+            z-index: 99;
+        }
+
+        .sidebar.collapsed {
+            left: -250px;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 3px;
+        }
+
+        .user-status {
+            font-size: 0.85rem;
+            color: var(--success-color);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 5px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--dark-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .nav-menu a i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .logout-btn {
+            margin: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            color: var(--danger-color);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            width: calc(100% - 40px);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        /* Main content styles */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .dashboard-header {
+            margin-bottom: 20px;
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+        }
+
+        .breadcrumb {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .data-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .data-card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .session-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .session-table th, .session-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .session-table th {
+            font-weight: 600;
+            color: #666;
+            background-color: #f8f9fa;
+        }
+
+        .session-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .session-table .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .session-table .status.active {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+        }
+
+        .session-table .status.inactive {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--danger-color);
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+
+        .loading:after {
+            content: " ";
+            display: block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 6px solid var(--primary-color);
+            border-color: var(--primary-color) transparent var(--primary-color) transparent;
+            animation: loader 1.2s linear infinite;
+        }
+
+        @keyframes loader {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive styles */
+        @media screen and (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .sidebar {
+                left: -250px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .header-title {
+                margin-left: 20px;
+            }
+        }
+    </style>
+    <!-- Icon library for menu icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <button class="hamburger" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="header-title">User Management System</div>
+        <div class="user-info-mini">
+            <span id="headerUserName"></span>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div>
+                    <div class="user-name" id="sidebarUserName">Loading...</div>
+                    <div class="user-status" id="userStatus">Online</div>
+                </div>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            <li><a href="#"><i class="fas fa-bell"></i> Notifications</a></li>
+        </ul>
+        <button id="logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Logout
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Dashboard</h1>
+            <div class="breadcrumb">Home > Dashboard</div>
+        </div>
+
+        <div class="data-card">
+            <h2>Session Information</h2>
+            <div id="sessionDataContainer">
+                <div class="loading" id="sessionLoading"></div>
+                <table class="session-table" id="sessionTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Sign-in Time</th>
+                            <th>Logout Time</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="userIdDisplay"></td>
+                            <td id="signinTimeDisplay"></td>
+                            <td id="logoutTimeDisplay"></td>
+                            <td id="emailDisplay"></td>
+                            <td id="phoneDisplay"></td>
+                            <td id="statusDisplay"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // DOM Elements
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const logoutBtn = document.getElementById('logout');
+        const sessionLoading = document.getElementById('sessionLoading');
+        const sessionTable = document.getElementById('sessionTable');
+
+        // Toggle sidebar
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // Format datetime for display
+        function formatDateTime(dateTimeStr) {
+            if (!dateTimeStr) return 'N/A';
+            const date = new Date(dateTimeStr);
+            return new Intl.DateTimeFormat('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }).format(date);
+        }
+
+        // Check if user is logged in
+        function checkUserLoggedIn() {
+            const userId = sessionStorage.getItem("userId");
+            const userName = sessionStorage.getItem("userName");
+            
+           
+            
+            // Display user info in sidebar and header
+            document.getElementById("sidebarUserName").textContent = userName;
+            document.getElementById("headerUserName").textContent = userName;
+            document.getElementById("userAvatar").textContent = userName.charAt(0).toUpperCase();
+            
+            return true;
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            if (!checkUserLoggedIn()) return;
+            
+            const userId = sessionStorage.getItem("userId");
+            
+            // Show loading indicator
+            sessionLoading.style.display = 'flex';
+            sessionTable.style.display = 'none';
+            
+            // Fetch user session data
+            fetch(`http://localhost:8080/api/user_sessions/${userId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Hide loading indicator and show table
+                    sessionLoading.style.display = 'none';
+                    sessionTable.style.display = 'table';
+                    
+                    // Populate table with data
+                    document.getElementById("userIdDisplay").textContent = data.userId || "N/A";
+                    document.getElementById("signinTimeDisplay").textContent = formatDateTime(data.signinTime);
+                    document.getElementById("logoutTimeDisplay").textContent = data.logoutTime ? formatDateTime(data.logoutTime) : "Active";
+                    document.getElementById("emailDisplay").textContent = data.email || "N/A";
+                    document.getElementById("phoneDisplay").textContent = data.phone || "N/A";
+                    
+                    // Set status
+                    const statusDisplay = document.getElementById("statusDisplay");
+                    if (data.isActive) {
+                        statusDisplay.innerHTML = '<span class="status active">Online</span>';
+                        document.getElementById("userStatus").textContent = "Online";
+                        document.getElementById("userStatus").style.color = "var(--success-color)";
+                    } else {
+                        statusDisplay.innerHTML = '<span class="status inactive">Offline</span>';
+                        document.getElementById("userStatus").textContent = "Offline";
+                        document.getElementById("userStatus").style.color = "var(--danger-color)";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error loading dashboard data:", error);
+                    sessionLoading.style.display = 'none';
+                    alert("Failed to load dashboard data. Please try again.");
+                });
+        }
+
+        // Handle logout
+        logoutBtn.addEventListener('click', function() {
+            const userId = sessionStorage.getItem("userId");
+            
+            if (!userId) {
+                alert("No active session found. Redirecting to login page...");
+                window.location.href = "signin.html";
+                return;
+            }
+            
+            // Disable logout button to prevent multiple clicks
+            logoutBtn.disabled = true;
+            logoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 10px;"></i> Logging out...';
+            
+            logoutBtn.addEventListener('click', function() {
+    const userId = sessionStorage.getItem("userId");
+    
+    // Disable logout button to prevent multiple clicks
+    logoutBtn.disabled = true;
+    logoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 10px;"></i> Logging out...';
+    
+    // Check if we have a userId to send to the server
+    if (!userId) {
+        console.log("No userId found in session storage");
+        // Just redirect to login since there's no session to clear server-side
+        sessionStorage.clear();
+        window.location.href = "signin.html";
+        return;
+    }
+    
+    // Send logout request to server
+    fetch("http://localhost:8080/api/logout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ userId: userId })
+    })
+    .then(response => {
+        // Always clear local session data regardless of server response
+        sessionStorage.clear();
+        
+        // Process the response
+        if (!response.ok) {
+            console.warn("Server returned error during logout, but continuing with client logout");
+            window.location.href = "signin.html";
+            return null; // Don't try to parse JSON if response is not OK
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data) {
+            console.log("Logout response:", data);
+            
+            // Even if server says "no active session", we still want to logout locally
+            if (data.message.includes("No active session")) {
+                console.log("Server reports no active session, but proceeding with client logout");
+            }
+        }
+        
+        // Always redirect to login page
+        window.location.href = "signin.html";
+    })
+    .catch(error => {
+        console.error("Logout error:", error);
+        
+        // Even if there's an error, clear session and redirect
+        sessionStorage.clear();
+        window.location.href = "signin.html";
+    });
+});
+
+        });
+
+        // Initialize dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+
+        // Refresh dashboard data every 30 seconds
+        setInterval(loadDashboardData, 30000);
+    </script>
+</body>
+</html>

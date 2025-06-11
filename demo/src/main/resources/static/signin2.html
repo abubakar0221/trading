@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Authentication System</title>
+    <style>
+        :root {
+            --primary: #4776E6;
+            --secondary: #8E54E9;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --error: #dc3545;
+            --transition: all 0.4s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--light);
+        }
+
+        .navbar {
+            position: fixed;
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 30px;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            color: white;
+            text-align: center;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .auth-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        }
+
+        .forms-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .form-section {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .form-section.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .form-card {
+            width: 90%;
+            max-width: 450px;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .form-section.active .form-card {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .form-subtitle {
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: 16px;
+            color: #6c757d;
+            padding: 18px 15px;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 18px 15px;
+            font-size: 16px;
+            border: none;
+            border-bottom: 2px solid #e9ecef;
+            background-color: transparent;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group input:valid {
+            border-bottom-color: var(--primary);
+        }
+
+        .form-group input:focus + label,
+        .form-group input:valid + label {
+            top: -25px;
+            left: 0;
+            font-size: 14px;
+            color: var(--primary);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 15px;
+            color: #6c757d;
+        }
+
+        .form-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .form-link:hover {
+            color: var(--secondary);
+        }
+
+        .bg-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(71, 118, 230, 0.1), rgba(142, 84, 233, 0.1));
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: 50px;
+            left: 30px;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            bottom: 150px;
+            right: 100px;
+            animation-delay: 4s;
+        }
+
+        .shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            top: 120px;
+            left: 150px;
+            animation-delay: 6s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            50% {
+                transform: translate(20px, 20px) rotate(10deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            animation: slideDown 0.5s forwards;
+        }
+
+        @keyframes slideDown {
+            from {
+                top: -50px;
+                opacity: 0;
+            }
+            to {
+                top: 20px;
+                opacity: 1;
+            }
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.5s ease;
+        }
+
+        .indicator-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .form-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            margin: 0 5px;
+            transition: var(--transition);
+        }
+
+        .form-indicator.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transform: scale(1.3);
+        }
+
+        /* Social Login Buttons */
+        .social-login {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 15px;
+        }
+
+        .social-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .social-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+        }
+
+        .divider-line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: #e9ecef;
+        }
+
+        .divider-text {
+            margin: 0 15px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <!-- Success Message -->
+    <div class="success-message" id="success-message"></div>
+
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <!-- Background Shapes -->
+        <div class="bg-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+
+        <!-- Forms Container -->
+        <div class="forms-container">
+            <!-- Sign In Form -->
+            <div class="form-section" id="signin-section">
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2 class="form-title">Welcome Back</h2>
+                        <p class="form-subtitle">Sign in to continue your journey</p>
+                    </div>
+
+                   
+
+                    <div class="divider">
+                        <div class="divider-line"></div>
+                        <span class="divider-text">OR</span>
+                        <div class="divider-line"></div>
+                    </div>
+
+                    <form id="signin-form">
+                        <div class="form-group">
+                            <input type="email" id="signin-email" required>
+                            <label for="signin-email">Email Address</label>
+                            <div class="error-message" id="signin-email-error">Please enter a valid email address</div>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="signin-password" required>
+                            <label for="signin-password">Password</label>
+                            <div class="error-message" id="signin-password-error">Password must be at least 6 characters</div>
+                        </div>
+                        <button type="submit" class="submit-btn">Sign In</button>
+                    </form>
+
+                    <div class="form-footer">
+                        <a href="#" class="form-link" id="signin-to-forgot">Forgot Password?</a>
+                    </div>
+                    <div class="form-footer">
+                        Don't have an account? <a href="#" class="form-link" id="signin-to-signup">Sign Up</a>
+                    </div>
+
+                    <div class="indicator-container">
+                        <div class="form-indicator active"></div>
+                        <div class="form-indicator"></div>
+                        <div class="form-indicator"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div class="form-section" id="signup-section">
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2 class="form-title">Create Account</h2>
+                        
+                    </div>
+
+                    <form id="signup-form">
+                        <div class="form-group">
+                            <input type="text" id="signup-name" required>
+                            <label for="signup-name">Full Name</label>
+                            <div class="error-message" id="signup-name-error">Please enter your name</div>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="signup-email" required>
+                            <label for="signup-email">Email Address</label>
+                            <div class="error-message" id="signup-email-error">Please enter a valid email address</div>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="signup-password" required>
+                            <label for="signup-password">Password</label>
+                            <div class="error-message" id="signup-password-error">Password must be at least 8 characters with letters and numbers</div>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="signup-confirm" required>
+                            <label for="signup-confirm">Confirm Password</label>
+                            <div class="error-message" id="signup-confirm-error">Passwords do not match</div>
+                        </div>
+                        <button type="submit" class="submit-btn">Create Account</button>
+                    </form>
+
+                    <div class="form-footer">
+                        Already have an account? <a href="#" class="form-link" id="signup-to-signin">Sign In</a>
+                    </div>
+
+                    <div class="indicator-container">
+                        <div class="form-indicator"></div>
+                        <div class="form-indicator active"></div>
+                        <div class="form-indicator"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forgot Password Form -->
+            <div class="form-section" id="forgot-section">
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2 class="form-title">Reset Password</h2>
+                        <p class="form-subtitle">We'll send you a reset link</p>
+                    </div>
+
+                    <form id="forgot-form">
+                        <div class="form-group">
+                            <input type="email" id="forgot-email" required>
+                            <label for="forgot-email">Email Address</label>
+                            <div class="error-message" id="forgot-email-error">Please enter a valid email address</div>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Reset Link</button>
+                    </form>
+
+                    <div class="form-footer">
+                        Remember your password? <a href="#" class="form-link" id="forgot-to-signin">Sign In</a>
+                    </div>
+
+                    <div class="indicator-container">
+                        <div class="form-indicator"></div>
+                        <div class="form-indicator"></div>
+                        <div class="form-indicator active"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        // Form Elements
+        const signinSection = document.getElementById('signin-section');
+        const signupSection = document.getElementById('signup-section');
+        const forgotSection = document.getElementById('forgot-section');
+        const progressBar = document.getElementById('progress-bar');
+        const successMessage = document.getElementById('success-message');
+        
+        // Navigation
+        document.getElementById('signin-to-signup').addEventListener('click', function(e) {
+            e.preventDefault();
+            slideToForm('signup');
+        });
+        
+        document.getElementById('signup-to-signin').addEventListener('click', function(e) {
+            e.preventDefault();
+            slideToForm('signin');
+        });
+        
+        document.getElementById('signin-to-forgot').addEventListener('click', function(e) {
+            e.preventDefault();
+            slideToForm('forgot');
+        });
+        
+        document.getElementById('forgot-to-signin').addEventListener('click', function(e) {
+            e.preventDefault();
+            slideToForm('signin');
+        });
+        
+        // Form Switching Function
+        function slideToForm(formName) {
+            // Remove active class from all sections
+            signinSection.classList.remove('active');
+            signupSection.classList.remove('active');
+            forgotSection.classList.remove('active');
+            
+            // Update indicators
+            const indicators = document.querySelectorAll('.form-indicator');
+            indicators.forEach(ind => ind.classList.remove('active'));
+            
+            // Set active form and update progress bar
+            if (formName === 'signin') {
+                signinSection.classList.add('active');
+                indicators[0].classList.add('active');
+                progressBar.style.width = '33.3%';
+            } else if (formName === 'signup') {
+                signupSection.classList.add('active');
+                indicators[1].classList.add('active');
+                progressBar.style.width = '66.6%';
+            } else if (formName === 'forgot') {
+                forgotSection.classList.add('active');
+                indicators[2].classList.add('active');
+                progressBar.style.width = '100%';
+            }
+        }
+        
+        // Initialize
+        window.addEventListener('load', function() {
+            slideToForm('signin');
+        });
+        
+        // Form Validations
+        document.getElementById('signin-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            
+            // Email validation
+            const email = document.getElementById('signin-email').value;
+            if (!validateEmail(email)) {
+                document.getElementById('signin-email-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('signin-email-error').style.display = 'none';
+            }
+            
+            // Password validation
+            const password = document.getElementById('signin-password').value;
+            if (password.length < 6) {
+                document.getElementById('signin-password-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('signin-password-error').style.display = 'none';
+            }
+            
+            if (isValid) {
+                showSuccessMessage('Signed in successfully!');
+                // Here you would typically send the form data to your server
+            }
+        });
+        
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            
+            // Name validation
+            const name = document.getElementById('signup-name').value;
+            if (name.trim() === '') {
+                document.getElementById('signup-name-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('signup-name-error').style.display = 'none';
+            }
+            
+            // Email validation
+            const email = document.getElementById('signup-email').value;
+            if (!validateEmail(email)) {
+                document.getElementById('signup-email-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('signup-email-error').style.display = 'none';
+            }
+            
+            // Password validation
+            const password = document.getElementById('signup-password').value;
+            if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
+                document.getElementById('signup-password-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('signup-password-error').style.display = 'none';
+            }
+            
+            // Password confirmation
+            const confirm = document.getElementById('signup-confirm').value;
+            if (confirm !== password) {
+                document.getElementById('signup-confirm-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('signup-confirm-error').style.display = 'none';
+            }
+            
+            if (isValid) {
+                showSuccessMessage('Account created successfully!');
+                // Here you would typically send the form data to your server
+                setTimeout(() => {
+                    slideToForm('signin');
+                }, 2000);
+            }
+        });
+        
+        document.getElementById('forgot-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            
+            // Email validation
+            const email = document.getElementById('forgot-email').value;
+            if (!validateEmail(email)) {
+                document.getElementById('forgot-email-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('forgot-email-error').style.display = 'none';
+            }
+            
+            if (isValid) {
+                showSuccessMessage('Password reset link sent! Check your email.');
+                // Here you would typically send the form data to your server
+            }
+        });
+        
+        // Helper function for email validation
+        function validateEmail(email) {
+            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+        
+        // Function to show success message
+        function showSuccessMessage(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin_dashboard.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Admin Panel</h2>
+            <ul>
+                <li><a href="#">🏠 Dashboard</a></li>
+                <li><a href="#">📋 Users</a></li>
+                <li><a href="#">⚙️ Settings</a></li>
+                <li><a href="#">🚪 Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>Welcome, Admin</h1>
+                <div class="notification-icon" onclick="toggleNotifications()">
+                    🔔 <span id="notificationCount">0</span>
+                </div>
+            </header>
+
+            <!-- Recent Users Table -->
+            <section class="dashboard-section">
+                <h2>📌 Recent User Signups</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Signup Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userList">
+                            <!-- Users will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Notifications Panel -->
+            <div id="notificationPanel" class="notification-panel">
+                <h3>🔔 Notifications</h3>
+                <ul id="adminNotificationList"></ul>
+                <button onclick="closeNotifications()">Close</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Fetch Recent Users
+async function fetchRecentUsers() {
+    try {
+        const response = await fetch("http://localhost:8080/api/recent-signups");
+        const users = await response.json();
+
+        const userList = document.getElementById("userList");
+        userList.innerHTML = "";
+
+        users.forEach(user => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${user.userId}</td>
+                <td>${user.userName}</td>
+                <td>${user.email}</td>
+                <td>${user.phone}</td>
+                <td>${new Date(user.createdAt).toLocaleString()}</td>
+            `;
+            userList.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Error fetching users:", error);
+    }
+}
+
+// Fetch Admin Notifications
+async function fetchAdminNotifications() {
+    try {
+        const response = await fetch("http://localhost:8080/admin-notifications/unread");
+        const notifications = await response.json();
+
+        const notificationList = document.getElementById("adminNotificationList");
+        const notificationCount = document.getElementById("notificationCount");
+
+        notificationList.innerHTML = "";
+        notificationCount.textContent = notifications.length;
+
+        notifications.forEach(notification => {
+            const item = document.createElement("li");
+            item.innerText = notification.message;
+            item.onclick = async () => {
+                await markAsRead(notification.id);
+                fetchAdminNotifications();
+            };
+            notificationList.appendChild(item);
+        });
+
+    } catch (error) {
+        console.error("Error fetching notifications:", error);
+    }
+}
+
+// ✅ Mark notification as read in the database
+async function markAsRead(notificationId) {
+    try {
+        await fetch(`http://localhost:8080/admin-notifications/mark-as-read/${notificationId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+    } catch (error) {
+        console.error("Error marking notification as read:", error);
+    }
+}
+
+// Close Notification Panel
+function closeNotifications() {
+    document.getElementById("notificationPanel").style.display = "none";
+}
+
+// Toggle Notifications Panel
+function toggleNotifications() {
+    const panel = document.getElementById("notificationPanel");
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
+}
+
+// Load Initial Data
+fetchRecentUsers();
+fetchAdminNotifications();
+
+    </script>
+
+  <style>
+    /* General Styling */
+body {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background: #f4f4f4;
+}
+
+/* Dashboard Container */
+.admin-container {
+    display: flex;
+    width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 200px;
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    animation: slideIn 0.5s ease-in-out;
+}
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px;
+    transition: background 0.3s;
+}
+
+.sidebar ul li:hover {
+    background: #34495e;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    margin-left: 250px;
+    padding: 20px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Notification Icon */
+.notification-icon {
+    cursor: pointer;
+    font-size: 22px;
+    position: relative;
+}
+
+#notificationCount {
+    background: red;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 50%;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 14px;
+}
+
+/* Dashboard Section */
+.dashboard-section {
+    margin-top: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Table */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background: #2c3e50;
+    color: white;
+}
+
+/* Notifications */
+.notification-panel {
+    display: none;
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    background: white;
+    border-radius: 8px;
+    width: 320px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+}
+
+.notification-panel ul {
+    list-style: none;
+    padding: 0;
+}
+
+.notification-panel ul li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+  </style>
+</body>
+</html>

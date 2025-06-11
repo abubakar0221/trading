@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradePro - Advanced Trading Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f0f2f5;
+      color: #333;
+    }
+    
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0a2647;
+      padding: 1rem 2rem;
+      color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+    }
+    
+    .logo span {
+      color: #38bdf8;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+    
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      color: #38bdf8;
+    }
+    
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .auth-buttons button {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .login-btn {
+      background: transparent;
+      border: 1px solid white;
+      color: white;
+    }
+    
+    .login-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .signup-btn {
+      background: #38bdf8;
+      border: none;
+      color: #0a2647;
+    }
+    
+    .signup-btn:hover {
+      background: #0ea5e9;
+    }
+    
+    .hero {
+      padding: 2rem;
+      background: #0a2647;
+      color: white;
+      text-align: center;
+      padding-bottom: 4rem;
+    }
+    
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 0 auto;
+      margin-bottom: 2rem;
+      color: #cbd5e1;
+    }
+    
+    .get-started {
+      padding: 0.75rem 1.5rem;
+      background: #38bdf8;
+      color: #0a2647;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    
+    .get-started:hover {
+      background: #0ea5e9;
+    }
+    
+    .dashboard {
+      max-width: 1200px;
+      margin: -2rem auto 2rem;
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-gap: 1rem;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+    
+    .price-chart {
+      grid-column: span 8;
+    }
+    
+    .market-summary {
+      grid-column: span 4;
+    }
+    
+    .volume-chart, .technical-indicators {
+      grid-column: span 6;
+    }
+    
+    .order-book, .recent-trades {
+      grid-column: span 6;
+    }
+    
+    .news-feed {
+      grid-column: span 12;
+    }
+    
+    .card h2 {
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      color: #0a2647;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card h2 .icon {
+      color: #64748b;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    
+    .card h2 .icon:hover {
+      color: #0a2647;
+    }
+    
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .table th, .table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .table th {
+      font-weight: 600;
+      color: #64748b;
+    }
+    
+    .up {
+      color: #10b981;
+    }
+    
+    .down {
+      color: #ef4444;
+    }
+    
+    .news-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .news-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    
+    .news-image {
+      width: 80px;
+      height: 80px;
+      background-color: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .news-content h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .news-content p {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-bottom: 0.5rem;
+    }
+    
+    .news-content .timestamp {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    
+    .footer {
+      background: #0f172a;
+      color: white;
+      padding: 3rem 2rem;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+    
+    .footer-section h3 {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    
+    .footer-section a {
+      display: block;
+      color: #cbd5e1;
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-section a:hover {
+      color: #38bdf8;
+    }
+    
+    .copyright {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #1e293b;
+      color: #94a3b8;
+      font-size: 0.875rem;
+    }
+    
+    @media (max-width: 768px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      
+      .price-chart, .market-summary, .volume-chart, 
+      .technical-indicators, .order-book, .recent-trades,
+      .news-feed {
+        grid-column: span 1;
+      }
+      
+      .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="#" class="logo">Trade<span>Pro</span></a>
+    <div class="nav-links">
+      <a href="#">Dashboard</a>
+      <a href="#">Markets</a>
+      <a href="#">Trading</a>
+      <a href="#">Portfolio</a>
+      <a href="#">Analytics</a>
+    </div>
+    <div class="auth-buttons">
+      <button class="login-btn">Login</button>
+      <button class="signup-btn">Sign Up</button>
+    </div>
+  </nav>
+  
+  <section class="hero">
+    <h1>Professional Trading at Your Fingertips</h1>
+    <p>Access real-time market data, advanced charting tools, and insightful analytics to make informed trading decisions.</p>
+    <button class="get-started">Get Started Now</button>
+  </section>
+  
+  <div class="dashboard">
+    <div class="card price-chart">
+      <h2>BTC/USD Price Chart <span class="icon">&#8942;</span></h2>
+      <div id="price-chart-container" style="height: 320px;"></div>
+    </div>
+    
+    <div class="card market-summary">
+      <h2>Market Summary <span class="icon">&#8942;</span></h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>24h Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>BTC/USD</td>
+            <td>48,236.75</td>
+            <td class="up">+2.34%</td>
+          </tr>
+          <tr>
+            <td>ETH/USD</td>
+            <td>3,152.89</td>
+            <td class="up">+1.78%</td>
+          </tr>
+          <tr>
+            <td>SOL/USD</td>
+            <td>103.42</td>
+            <td class="down">-0.86%</td>
+          </tr>
+          <tr>
+            <td>XRP/USD</td>
+            <td>0.5724</td>
+            <td class="up">+0.43%</td>
+          </tr>
+          <tr>
+            <td>DOT/USD</td>
+            <td>6.87</td>
+            <td class="down">-1.21%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="card volume-chart">
+      <h2>Trading Volume <span class="icon">&#8942;</span></h2>
+      <div id="volume-chart-container" style="height: 250px;"></div>
+    </div>
+    
+    <div class="card technical-indicators">
+      <h2>Technical Indicators <span class="icon">&#8942;</span></h2>
+      <div id="indicators-chart-container" style="height: 250px;"></div>
+    </div>
+    
+    <div class="card order-book">
+      <h2>Order Book <span class="icon">&#8942;</span></h2>
+      <div id="order-book-chart" style="height: 250px;"></div>
+    </div>
+    
+    <div class="card recent-trades">
+      <h2>Recent Trades <span class="icon">&#8942;</span></h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Price</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>14:32:45</td>
+            <td class="up">48,236.75</td>
+            <td>0.0546</td>
+          </tr>
+          <tr>
+            <td>14:32:35</td>
+            <td class="down">48,231.20</td>
+            <td>0.1250</td>
+          </tr>
+          <tr>
+            <td>14:31:58</td>
+            <td class="down">48,228.35</td>
+            <td>0.0387</td>
+          </tr>
+          <tr>
+            <td>14:31:42</td>
+            <td class="up">48,240.60</td>
+            <td>0.2145</td>
+          </tr>
+          <tr>
+            <td>14:31:23</td>
+            <td class="up">48,245.15</td>
+            <td>0.0833</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+   
+
+  </div>
+  
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>TradePro</h3>
+        <a href="#">About Us</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+        <a href="#">Blog</a>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Products</h3>
+        <a href="#">Exchange</a>
+        <a href="#">Institutional Services</a>
+        <a href="#">API</a>
+        <a href="#">Mobile App</a>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Support</h3>
+        <a href="#">Help Center</a>
+        <a href="#">Contact Us</a>
+        <a href="#">FAQ</a>
+        <a href="#">Security</a>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Legal</h3>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Risk Disclosure</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+    
+    <div class="copyright">
+      &copy; 2025 TradePro. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script>
+    // Price Chart
+    const priceCtx = document.createElement('canvas');
+    document.getElementById('price-chart-container').appendChild(priceCtx);
+    
+    const priceLabels = Array.from({length: 30}, (_, i) => i + 1);
+    const priceData = [
+      46720, 46850, 47100, 46900, 47300, 47200, 47500, 47450, 47800, 47750,
+      47900, 47850, 48000, 48150, 48050, 48200, 48100, 48350, 48250, 48400,
+      48300, 48150, 48250, 48350, 48237, 48300, 48150, 48237, 48150, 48236
+    ];
+    
+    new Chart(priceCtx, {
+      type: 'line',
+      data: {
+        labels: priceLabels,
+        datasets: [{
+          label: 'BTC/USD Price',
+          data: priceData,
+          borderColor: '#38bdf8',
+          backgroundColor: 'rgba(56, 189, 248, 0.1)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: 0,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
+        },
+        scales: {
+          x: {
+            display: true,
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            display: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            }
+          }
+        }
+      }
+    });
+    
+    // Volume Chart
+    const volumeCtx = document.createElement('canvas');
+    document.getElementById('volume-chart-container').appendChild(volumeCtx);
+    
+    const volumeLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const volumeData = [850, 750, 820, 780, 880, 930, 920, 1020, 980, 925, 970, 1050];
+    
+    new Chart(volumeCtx, {
+      type: 'bar',
+      data: {
+        labels: volumeLabels,
+        datasets: [{
+          label: 'Trading Volume (millions USD)',
+          data: volumeData,
+          backgroundColor: '#38bdf8',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            }
+          }
+        }
+      }
+    });
+    
+    // Technical Indicators Chart
+    const indicatorsCtx = document.createElement('canvas');
+    document.getElementById('indicators-chart-container').appendChild(indicatorsCtx);
+    
+    const indicatorLabels = Array.from({length: 20}, (_, i) => i + 1);
+    const priceDataShort = priceData.slice(-20);
+    const smaData = [];
+    const emaData = [];
+    
+    // Calculate SMA and EMA
+    for (let i = 0; i < priceDataShort.length; i++) {
+      if (i >= 4) {
+        // Simple 5-day moving average
+        const sma = (priceDataShort[i] + priceDataShort[i-1] + priceDataShort[i-2] + priceDataShort[i-3] + priceDataShort[i-4]) / 5;
+        smaData.push(sma);
+      } else {
+        smaData.push(null);
+      }
+      
+      // Simple EMA approximation
+      if (i === 0) {
+        emaData.push(priceDataShort[0]);
+      } else {
+        const k = 2 / (10 + 1); // 10-day EMA factor
+        const ema = priceDataShort[i] * k + emaData[i-1] * (1-k);
+        emaData.push(ema);
+      }
+    }
+    
+    new Chart(indicatorsCtx, {
+      type: 'line',
+      data: {
+        labels: indicatorLabels,
+        datasets: [
+          {
+            label: 'Price',
+            data: priceDataShort,
+            borderColor: '#38bdf8',
+            borderWidth: 2,
+            tension: 0.1,
+            pointRadius: 0
+          },
+          {
+            label: 'SMA (5)',
+            data: smaData,
+            borderColor: '#ef4444',
+            borderWidth: 2,
+            tension: 0.1,
+            pointRadius: 0
+          },
+          {
+            label: 'EMA (10)',
+            data: emaData,
+            borderColor: '#10b981',
+            borderWidth: 2,
+            tension: 0.1,
+            pointRadius: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            }
+          }
+        }
+      }
+    });
+    
+    // Order Book Chart
+    const orderBookCtx = document.createElement('canvas');
+    document.getElementById('order-book-chart').appendChild(orderBookCtx);
+    
+    const askPrices = [48240, 48250, 48260, 48270, 48280, 48290, 48300, 48310, 48320, 48330];
+    const askVolumes = [1.2, 2.5, 3.8, 4.2, 5.5, 6.1, 7.4, 8.2, 9.5, 10.8];
+    
+    const bidPrices = [48230, 48220, 48210, 48200, 48190, 48180, 48170, 48160, 48150, 48140];
+    const bidVolumes = [1.5, 2.8, 3.6, 4.5, 5.3, 6.7, 7.9, 8.6, 9.3, 10.5];
+    
+    new Chart(orderBookCtx, {
+      type: 'bar',
+      data: {
+        labels: [...bidPrices.reverse(), ...askPrices],
+        datasets: [
+          {
+            label: 'Bids',
+            data: [...bidVolumes.reverse(), ...Array(askPrices.length).fill(null)],
+            backgroundColor: '#10b981'
+          },
+          {
+            label: 'Asks',
+            data: [...Array(bidPrices.length).fill(null), ...askVolumes],
+            backgroundColor: '#ef4444'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'x',
+        plugins: {
+          tooltip: {
+            callbacks: {
+              title: function(tooltipItems) {
+                return 'R' + tooltipItems[0].label;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            stacked: true,
+            grid: {
+              display: false
+            },
+            ticks: {
+              callback: function(value, index) {
+                const allLabels = [...bidPrices.reverse(), ...askPrices];
+                // Show fewer ticks for readability
+                if (index === 0 || index === 9 || index === 10 || index === 19) {
+                  return 'R' + allLabels[index];
+                }
+                return '';
+              }
+            }
+          },
+          y: {
+            stacked: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            },
+            title: {
+              display: true,
+              text: 'Volume'
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

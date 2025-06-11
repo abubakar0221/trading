@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
+<link rel="stylesheet" href="admin_dashboard.css">
+
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <button class="hamburger" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo"><img src="pics/astrolite tech logo.png" alt="img" class="image"></div>
+        <div class="header-title">Admin Management System</div>
+        <div class="user-info-mini">
+            <div class="notification-icon" onclick="toggleNotifications()">
+                🔔 <span id="notificationCount">0</span>
+            </div>
+             <div class="user-data">
+            <span id="headerAdminName" class="username">Loading...</span>
+            <span id="headerAdminRole" class="name" style="font-size: 10px; color: black; margin-left: 4px;">(Admin)</span>
+             </div>
+        </div>
+    </header>
+
+
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="user-info">
+                <div class="user-avatar" id="adminAvatar">A</div>
+                <div>
+                    <div class="user-name" id="sidebarAdminName">Loading...</div>
+                    <div class="user-role" id="sidebarAdminRole">Admin</div>
+                    <div class="user-status" id="adminStatus">Online</div>
+                </div>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#"  onclick="showModule('dashboardModule')"   ><i class="fas fa-tachometer-alt" ></i> Dashboard</a></li>
+            <li><a href="#"  onclick="showModule('manageUsersModule')"  ><i class="fas fa-user-cog" ></i> Manage Users</a></li>
+            <li><a href="#"  onclick="showModule('reportsModule')"><i class="fas fa-chart-line"></i> Reports</a></li>
+            <li><a href="#"  onclick="showModule('adminProfileModule')"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="#"  onclick="showModule('settingsModule')" ><i class="fas fa-tools"></i> Settings</a></li>
+            <li><a href="#"  onclick="showModule('chatModule')"><i class="fas fa-comment-sms"></i> Chat</a></li>
+
+        </ul>
+        <button id="logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </aside>
+
+
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="mainContent">
+
+
+        <div id="dashboardModule" class="module" style="display: block;">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Admin Dashboard</h1>
+            <div class="breadcrumb">Home &gt; Dashboard</div>
+        </div>
+
+        <div class="data-card fade-in">
+            <h2>Session Information</h2>
+            <div id="sessionDataContainer">
+                <div class="loading" id="sessionLoading">Loading...</div>
+                <table class="session-table" id="sessionTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Admin ID</th>
+                            <th>Admin Name</th>
+                            <th>Sign-in Time</th>
+                            <th>Logout Time</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="userIdDisplay"></td>
+                            <td id="userNameDisplay"></td>
+                            <td id="signinTimeDisplay"></td>
+                            <td id="logoutTimeDisplay"></td>
+                            <td id="roleDisplay"></td>
+                            <td id="statusDisplay"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+        
+
+         <!-- Manage Users Section -->
+  <div id="manageUsersModule" class="module" style="display: none;">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Manage Users</h1>
+        <div class="breadcrumb">Home &gt; Manage Users</div>
+    </div>
+    
+   <!-- Search Bar -->
+  <!-- Search and Sort Controls for All Users -->
+<div  style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+    <div style="position: relative;">
+      <input type="text" id="allUserSearchInput" placeholder="Search by User ID, Name, or Role" style="padding-left: 30px;">
+      <span style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: #aaa;">
+        🔍
+      </span>
+    </div>
+    <select id="allUserSortSelect">
+      <option value="">Sort by</option>
+      <option value="userId">User ID</option>
+      <option value="userName">User Name</option>
+      <option value="role">Role</option>
+    </select>
+
+    <button onclick="downloadAllUsersReport()" class="download-btn"> 📄 Download All Users</button>
+
+      
+  </div>
+  
+  
+
+    <div class="data-card fade-in">
+        <h2>User List</h2>
+        <div id="userLoading">Loading users...</div>
+        <table class="session-table" id="userTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <!-- User rows will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+    </div>
+      
+
+    
+    <div id="reportsModule" class="module" style="display: none; padding: 20px;">
+        <h2 style="font-size: 24px; margin-bottom: 20px;">Recent User Registrations</h2>
+
+        
+        <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+            <div style="position: relative;">
+              <input type="text" id="searchInput" placeholder="Search by User ID, Name, or Role" style="padding-left: 30px;">
+              <span style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: #aaa;">
+                🔍
+              </span>
+            </div>
+            <select id="sortSelect">
+              <option value="">Sort by</option>
+              <option value="userId">User ID</option>
+              <option value="userName">User Name</option>
+              <option value="role">Role</option>
+            </select>
+
+            <button onclick="downloadUserReport()" class="download-btn">📄 Download User Report (PDF)</button>
+
+
+          </div>
+
+        <div id="recentUsersLoading" class="loading-message">Loading recent users...</div>
+        <table id="recentUsersTable" class="user-table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>User Name</th>
+              <th>Role</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+          <tbody id="recentUsersTableBody"></tbody>
+        </table>
+      </div>
+      
+
+
+      <div id="adminProfileModule" class="module" style="display: none;">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Admin Profile</h1>
+            <div class="breadcrumb">Home &gt; Profile</div>
+        </div>
+      
+        <div class="profile-card">
+          <div class="profile-photo">
+            <img id="profileImage" class="profile-pic" src="pics/istockphoto-1316947194-612x612.jpg" alt="Profile Image" />
+          </div>
+          <div class="profile-details">
+            <div class="profile-row">
+              <span class="profile-label">User ID:</span>
+              <span id="profileUserId">Loading...</span>
+            </div>
+            <div class="profile-row">
+              <span class="profile-label">Name:</span>
+              <span id="profileUserName">Loading...</span>
+            </div>
+            <div class="profile-row">
+              <span class="profile-label">Email:</span>
+              <span id="profileEmail">Loading...</span>
+            </div>
+            <div class="profile-row">
+              <span class="profile-label">Phone:</span>
+              <span id="profilePhone">Loading...</span>
+            </div>
+            <div class="profile-row">
+              <span class="profile-label">Role:</span>
+              <span id="profileRole">Loading...</span>
+            </div>
+            <div class="profile-row">
+              <span class="profile-label">Referral Code:</span>
+              <span id="profileReferralCode">Loading...</span>
+            </div>
+            <div class="profile-row">
+              <span class="profile-label">Created At:</span>
+              <span id="profileCreatedAt">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+
+      <div id="settingsModule" class="module" style="display: none;">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Admin Settings</h1>
+            <div class="breadcrumb">Home > Settings</div>
+        </div>
+    
+       
+        <!-- Username Section -->
+        <div class="settings-section">
+            <label>Username:</label>
+            <span id="currentUsername" class="current-value">Loading...</span>
+            <div id="usernameEdit" class="edit-section">
+                <input type="text" id="usernameInput" placeholder="Enter new username" />
+                <button class="save-button" onclick="saveUsername()">Save</button>
+                <button class="cancel-button" onclick="cancelEdit('username')">Cancel</button>
+            </div>
+            
+        </div>
+    
+        <!-- Phone Section -->
+        <div class="settings-section">
+            <label>Phone:</label>
+            <span id="currentPhone" class="current-value">Loading...</span>
+            <div id="phoneEdit" class="edit-section">
+                <input type="tel" id="phoneInput" placeholder="Enter new phone number" />
+                <button class="save-button" onclick="savePhone()">Save</button>
+                <button class="cancel-button" onclick="cancelEdit('phone')">Cancel</button>
+            </div>
+           
+        </div>
+    
+        <!-- Single Edit Button -->
+    <div class="settings-section">
+      <button class="edit-button" id="editProfileBtn" onclick="editProfile()">Edit Profile</button>
+  </div>
+
+
+        <!-- Profile Picture -->
+        <div class="settings-section">
+            <label>Change Profile Picture:</label>
+            <img id="settingsImage" class="profile-pic" src="pics/istockphoto-1316947194-612x612.jpg" alt="Current Profile Image" />
+            <input type="file" id="uploadInput" accept="image/*" />
+        </div>
+    
+        <div id="settingsStatus" class="status-msg"></div>
+    
+    
+        <div id="successPopup">
+          <p id="successMessage"></p>
+          <button onclick="closePopup()">OK</button>
+      </div>
+       </div>
+    
+       
+      
+    
+      
+
+
+
+
+
+
+
+      <div id="chatModule" class="module" style="display: none;">
+        <h2>Chat</h2>
+        <!-- Chat messages will be displayed here -->
+        <div class="chat-box" id="chatBox"></div>
+        
+        <!-- Chat input area -->
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Type your message..." />
+            <button onclick="sendChatMessage()">Send</button>
+        </div>
+        
+        <!-- Loading indicator for fetching chat -->
+        <div id="loadingIndicator" style="display: none;">Loading...</div>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+         <!-- Notifications Panel -->
+         <div id="notificationPanel" class="notification-panel">
+            <h3>🔔 Notifications</h3>
+            <ul id="adminNotificationList"></ul>
+            <button onclick="closeNotifications()" style="
+            position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: red;
+        cursor: pointer;
+        font-weight: bold;
+            ">x</button>
+        </div>
+    
+    </main>
+
+   
+    <script src="admin_dashboard.js"></script>
+ 
+
+
+
+
+
+    
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+
+  <link rel="stylesheet" href="user_dashboard3.css">
+</head>
+<body>
+
+
+    <header class="header">
+        <button class="hamburger" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo"><img src="pics/astrolite tech logo.png" alt="img" class="image"></div>
+        <div class="header-title">User Management System</div>
+        <div class="user-info-mini">
+           
+          <div class="user-data">
+            <span id="headerUserName" class="username">Loading...</span>
+            <span id="headerUserRole"  class="name" style="font-size: 12px; color: black; margin-left: 8px;">(Role)</span>
+            </div>
+        </div>
+    </header>
+    
+
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="user-info">
+              <div class="user-avatar" id="userAvatar">U</div>
+
+                <div>
+                    <div class="user-name" id="sidebarUserName">Loading...</div>
+                    <div class="user-role" id="sidebarUserRole">Role</div>
+                    <div class="user-status" id="userStatus">Online</div>
+                </div>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#" onclick="showModule('dashboardModule')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="#" onclick="showModule('userProfileModule')"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="#" onclick="showModule('settingsModule')"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            <li><a href="#"  onclick="showModule('chatModule')"><i class="fas fa-comment-sms"></i> Chat</a></li>
+        </ul>
+        <button id="logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </aside>
+    
+    <main class="main-content" id="mainContent">
+
+
+
+        <div id="dashboardModule" class="module" style="display: block;">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Dashboard</h1>
+            <div class="breadcrumb">Home &gt; Dashboard</div>
+        </div>
+    
+        <div class="data-card fade-in">
+            <h2>Session Information</h2>
+            <div id="sessionDataContainer">
+                <div class="loading" id="sessionLoading">Loading...</div>
+                <table class="session-table" id="sessionTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Sign-in Time</th>
+                            <th>Logout Time</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            
+                            <td id="userIdDisplay"></td>
+                            <td id="userNameDisplay"></td>
+                            <td id="signinTimeDisplay"></td>
+                            <td id="logoutTimeDisplay"></td>
+                            <td id="roleDisplay"></td>
+                            <td id="statusDisplay"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+
+
+
+       <!-- USER PROFILE MODULE -->
+<div id="userProfileModule" class="module" style="display: none;">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">User Profile</h1>
+        <div class="breadcrumb">Home &gt; Profile</div>
+    </div>
+  
+    <div class="profile-card">
+      <div class="profile-photo">
+        <img id="profileImage" class="profile-pic" src="pics/istockphoto-1316947194-612x612.jpg" alt="Profile Image" />
+      </div>
+      <div class="profile-details">
+        <div class="profile-row">
+          <span class="profile-label">User ID:</span>
+          <span id="profileUserId">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Name:</span>
+          <span id="profileUserName">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Email:</span>
+          <span id="profileEmail">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Phone:</span>
+          <span id="profilePhone">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Role:</span>
+          <span id="profileRole">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Referral Code:</span>
+          <span id="profileReferralCode">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Created At:</span>
+          <span id="profileCreatedAt">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+
+
+
+  <div id="settingsModule" class="module" style="display: none;">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">User Settings</h1>
+        <div class="breadcrumb">Home > Settings</div>
+    </div>
+
+   
+    <!-- Username Section -->
+    <div class="settings-section">
+        <label>Username:</label>
+        <span id="currentUsername" class="current-value">Loading...</span>
+        <div id="usernameEdit" class="edit-section">
+            <input type="text" id="usernameInput" placeholder="Enter new username" />
+            <button class="save-button" onclick="saveUsername()">Save</button>
+            <button class="cancel-button" onclick="cancelEdit('username')">Cancel</button>
+        </div>
+       
+    </div>
+
+    <!-- Phone Section -->
+    <div class="settings-section">
+        <label>Phone:</label>
+        <span id="currentPhone" class="current-value">Loading...</span>
+        <div id="phoneEdit" class="edit-section">
+            <input type="tel" id="phoneInput" placeholder="Enter new phone number" />
+            <button class="save-button" onclick="savePhone()">Save</button>
+            <button class="cancel-button" onclick="cancelEdit('phone')">Cancel</button>
+        </div>  
+    </div>
+
+    <!-- Single Edit Button -->
+    <div class="settings-section">
+        <button class="edit-button" id="editProfileBtn" onclick="editProfile()">Edit Profile</button>
+    </div>
+
+    <!-- Profile Picture -->
+    <div class="settings-section">
+        <label>Change Profile Picture:</label>
+        <img id="settingsImage" class="profile-pic" src="pics/istockphoto-1316947194-612x612.jpg" alt="Current Profile Image" />
+        <input type="file" id="uploadInput" accept="image/*" />
+    </div>
+
+    <div id="settingsStatus" class="status-msg"></div>
+
+
+    <div id="successPopup">
+      <p id="successMessage"></p>
+      <button onclick="closePopup()">OK</button>
+  </div>
+   </div>
+
+   
+  
+
+  
+
+
+
+  
+
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <div id="chatModule" class="module" style="display: none;">
+    <h2>Chat</h2>
+  
+    <!-- Chat Box to display messages -->
+    <div class="chat-box" id="chatBox">
+      <!-- Messages will be displayed here -->
+    </div>
+
+     <!-- Notification Area (Hidden initially) -->
+  <div id="notificationArea" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #4caf50; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+    New message received!
+  </div>
+  
+    <!-- Loading indicator -->
+    <div id="loadingIndicator" style="display: none;">Loading...</div>
+  
+    <!-- Message Input Section -->
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="Type your message..." />
+      <button onclick="sendChatMessage()">Send</button>
+    </div>
+  </div>
+  
+
+
+
+
+    </main>
+    
+
+
+
+
+
+
+
+    
+    
+    
+   <script src="user_dashboard3.js"></script> 
+   
+
+   
+</body>
+</html>
