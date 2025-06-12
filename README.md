@@ -17,6 +17,7 @@ About Page (https://abubakar0221/trading/about.html)
 Forgot Password Page (https://abubakar0221.github.io/trading/forgot.html)
 Contact Page (https://abubakar0221/trading/contact.html)
 FAQ Page (https://abubakar0221/trading/faq.html)
+dashboard here:https://abubakar0221.gtihub.io/trading/demo/src/main/resources/static/User_dashboard2.html
 
 Prerequisites
 
