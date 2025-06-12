@@ -102,6 +102,5 @@ If not, install JDK 17 from oracle.com/java/technologies/downloads/.
 Contributing
 Feel free to fork this repository, make changes, and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
 License
-This project is licensed under the MIT License - see the LICENSE file for details.
-Contact
+
 For questions, reach out to abubakar0221 on GitHub.
