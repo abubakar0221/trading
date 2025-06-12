@@ -10,9 +10,11 @@ Spring Boot App: The app is deployed on Render at https://trading-app.onrender.c
 GitHub Pages Links
 Access the static pages of this project directly in your browser:
 
+
+
 Home Page (https://abubakar0221/trading/)
 About Page (https://abubakar0221/trading/about.html)
-Forgot Password Page (https://abubakar0221/trading/forgot.html)
+Forgot Password Page (https://abubakar0221.github.io/trading/forgot.html)
 Contact Page (https://abubakar0221/trading/contact.html)
 FAQ Page (https://abubakar0221/trading/faq.html)
 
