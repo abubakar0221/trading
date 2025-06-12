@@ -14,9 +14,19 @@ Access the static pages of this project directly in your browser:
 
  User Signin : (https://abubakar0221.github.io/trading/demo/src/main/resources/static/signin.html )
 
- dashboard here: ( https://abubakar0221.github.io/trading/demo/src/main/resources/static/User_dashboard2.html )
+ User Signup : ( https://abubakar0221.github.io/trading/demo/src/main/resources/static/signup.html )
+
+ Forgot : ( https://abubakar0221.github.io/trading/demo/src/main/resources/static/forgot.html )
+
+ AdminSignup : ( https://abubakar0221.github.io/trading/demo/src/main/resources/static/adminSignup.html )
+
+ Admin Signin : ( https://abubakar0221.github.io/trading/demo/src/main/resources/static/adminSignin.html )
+
+ Admin Dashboard : (https://abubakar0221.github.io/trading/demo/src/main/resources/static/adminSignin.html )
+
+ Sample Dashboard here: ( https://abubakar0221.github.io/trading/demo/src/main/resources/static/User_dashboard2.html )
          
- Original dashboard here:( https://abubakar0221.github.io/trading/demo/src/main/resources/static/user_dashboard3.html )
+ Original Dashboard here:( https://abubakar0221.github.io/trading/demo/src/main/resources/static/user_dashboard3.html )
 
 Prerequisites
 
