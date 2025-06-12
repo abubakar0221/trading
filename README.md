@@ -12,15 +12,11 @@ Access the static pages of this project directly in your browser:
 
 
 
-Home Page (https://abubakar0221/trading/)
-About Page (https://abubakar0221/trading/about.html)
-Forgot Password Page (https://abubakar0221.github.io/trading/forgot.html)
-Contact Page (https://abubakar0221/trading/contact.html)
-FAQ Page (https://abubakar0221/trading/faq.html)
+ User Signin : (https://abubakar0221.github.io/trading/demo/src/main/resources/static/signin.html )
 
  dashboard here: ( https://abubakar0221.github.io/trading/demo/src/main/resources/static/User_dashboard2.html )
          
- Original dashboard here:( https://abubakar0221.github.io/trading/demo/src/main/resources/static/User_dashboard3.html )
+ Original dashboard here:( https://abubakar0221.github.io/trading/demo/src/main/resources/static/user_dashboard3.html )
 
 Prerequisites
 
